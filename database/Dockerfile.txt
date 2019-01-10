@@ -1,6 +1,0 @@
-FROM: mysql:5.7
-
-ENV MYSQL_DATABASE reviews_db
-
-COPY ./schema_files/ /docker-entrypoint-initdb.d/
-

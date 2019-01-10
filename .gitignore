@@ -1,4 +1,9 @@
+# Seed data files
+products.csv
+users.csv
+reviews.csv
+
+.DS_Store
 .gitignore
 node_modules
-package-lock.json
 public/bundle.js
