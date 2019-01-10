@@ -1,5 +1,5 @@
-const NUM_PRODUCTS = 10;
-const NUM_USERS = 10;
+const NUM_PRODUCTS = 10000000;
+const NUM_USERS = 10000;
 const MAX_REVIEWS_PER_PRODUCT = 10;
 
 module.exports = {

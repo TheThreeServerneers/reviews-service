@@ -3,20 +3,11 @@ const faker = require('faker');
 const { NUM_PRODUCTS, NUM_USERS, MAX_REVIEWS_PER_PRODUCT } = require('./generationConfig.js');
 
 const makeReviews = (numReviews, productNum) => {
-  const reviews = [];
+  let reviews = '';
   for (let i = 0; i < numReviews; i += 1) {
-    const review = [
-      productNum,
-      faker.random.number({ max: NUM_USERS, min: 1 }),
-      faker.random.words(),
-      faker.lorem.paragraph(),
-      faker.random.number({ max: 5, min: 1 }),
-      faker.date.between('2019-01-09', '2018-10-09').toISOString().split('T')[0],
-      faker.random.number(25),
-    ];
-    reviews.push(review.join(','));
+    reviews += `${productNum}, ${faker.random.number({ max: NUM_USERS, min: 1 })}, ${faker.random.words()}, ${faker.lorem.paragraph()}, ${faker.random.number({ max: 5, min: 1 })}, ${faker.date.between('2019-01-09', '2018-10-09').toISOString().split('T')[0]}, ${faker.random.number(25)}\n`;
   }
-  return `${reviews.join('\n')}\n`;
+  return reviews;
 };
 
 const writeStream = fs.createWriteStream('reviews.csv');
