@@ -11,8 +11,9 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS reviews (
   id serial PRIMARY KEY,
-  product_id integer REFERENCES products,
-  user_id integer REFERENCES users,
+  review_id integer NOT NULL,
+  product_id integer NOT NULL,
+  user_id integer NOT NULL,
   title varchar(255) NOT NULL,
   text text NOT NULL,
   score integer NOT NULL,

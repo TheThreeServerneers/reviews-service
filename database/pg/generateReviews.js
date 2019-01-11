@@ -7,6 +7,7 @@ const writer = csvWriter();
 writer.pipe(fs.createWriteStream('reviews.csv'));
 
 let i = 1;
+let counter = 1;
 
 const write = () => {
   let ok = true;
@@ -15,14 +16,16 @@ const write = () => {
     const numReviews = faker.random.number({ max: MAX_REVIEWS_PER_PRODUCT, min: 1 });
     for (let j = 0; j < numReviews; j += 1) {
       ok = writer.write({
+        reviews_id: counter,
         product_id: i,
         user_id: faker.random.number({ max: NUM_USERS, min: 1 }),
-        title: faker.random.words(),
+        title: `${counter}${faker.random.words()}`,
         text: faker.lorem.paragraph(),
         score: faker.random.number({ max: 5, min: 1 }),
         date: faker.date.between('2019-01-09', '2018-10-09').toISOString().split('T')[0],
         found_helpful: faker.random.number(25),
       });
+      counter += 1;
     }
     i += 1;
   }

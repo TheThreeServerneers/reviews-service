@@ -1,7 +1,5 @@
 # Seed data files
-products.csv
-users.csv
-reviews.csv
+*.csv
 
 .DS_Store
 .gitignore
