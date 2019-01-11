@@ -1,0 +1,9 @@
+const NUM_PRODUCTS = 10000000;
+const NUM_USERS = 10000;
+const MAX_REVIEWS_PER_PRODUCT = 10;
+
+module.exports = {
+  NUM_PRODUCTS,
+  NUM_USERS,
+  MAX_REVIEWS_PER_PRODUCT,
+};
