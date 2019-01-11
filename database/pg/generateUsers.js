@@ -1,21 +1,23 @@
 const fs = require('fs');
 const faker = require('faker');
+const csvWriter = require('csv-write-stream');
 const { NUM_USERS } = require('./generationConfig.js');
 
-const writeStream = fs.createWriteStream('users.csv');
+const writer = csvWriter();
+writer.pipe(fs.createWriteStream('users.csv'));
+
 let i = 0;
 
-writeStream.write('NAME, IS_VERIFIED\n');
 const write = () => {
   let ok = true;
 
   while (i < NUM_USERS && ok) {
-    ok = writeStream.write(`${faker.internet.userName()}, ${faker.random.boolean()}\n`);
+    ok = writer.write({ name: faker.internet.userName(), is_verified: faker.random.boolean() });
     i += 1;
   }
 
   if (i < NUM_USERS) {
-    writeStream.once('drain', write);
+    writer.once('drain', write);
   }
 };
 
