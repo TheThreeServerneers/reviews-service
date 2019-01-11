@@ -2,6 +2,5 @@
 *.csv
 
 .DS_Store
-.gitignore
 node_modules
 public/bundle.js
