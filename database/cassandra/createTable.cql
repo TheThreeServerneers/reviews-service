@@ -1,6 +1,6 @@
 USE reviews;
 CREATE TABLE IF NOT EXISTS reviews (
-  review_id int PRIMARY KEY,
+  review_id int,
   product_id int,
   product_name text,
   user_id int,
@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS reviews (
   text text,
   score int,
   date date,
-  found_helpful int
+  found_helpful int,
+  PRIMARY KEY (review_id, product_id, title)
 );
