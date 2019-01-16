@@ -1,3 +1,6 @@
+# DB Config
+connectConfig.js
+
 # Seed data files
 *.csv
 
