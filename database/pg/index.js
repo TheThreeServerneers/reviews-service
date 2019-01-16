@@ -7,10 +7,10 @@ client.connect();
 const addReview = async (data) => {
   try {
     const {
-      reviewId, productId, userId, title, text, score, date, foundHelpful,
+      reviewId, productId, productName, userId, userName, isVerified, title, text, score, date, foundHelpful,
     } = data;
-    const query = 'INSERT INTO reviews (review_id, product_id, user_id, title, text, score, date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
-    const values = [reviewId, productId, userId, title, text, score, date, foundHelpful];
+    const query = 'INSERT INTO reviews (review_id, product_id, product_name, user_id, user_name, is_verified, title, text, score, date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
+    const values = [reviewId, productId, productName, userId, userName, isVerified, title, text,score, date, foundHelpful];
     const res = await client.query(query, values);
     return res.rowCount;
   } catch (err) {
@@ -20,24 +20,7 @@ const addReview = async (data) => {
 
 const getReview = async (reviewId) => {
   try {
-    const query = `
-      SELECT 
-        r.product_id,
-        p.name as product_name,
-        u.name as username,
-        u.is_verified, 
-        r.text as review_text,
-        r.score,
-        r.found_helpful,
-        r.title,
-        r.date as review_date
-      FROM reviews as r
-      INNER JOIN products as p 
-        ON r.product_id = p.id
-      INNER JOIN users as u
-        ON r.user_id = u.id
-      WHERE r.review_id = $1
-    `;
+    const query = 'SELECT * FROM reviews WHERE id = $1';
     const res = await client.query(query, [reviewId]);
     return res.rows[0];
   } catch (err) {
@@ -47,25 +30,7 @@ const getReview = async (reviewId) => {
 
 const getAllReviews = async (productId) => {
   try {
-    const query = `
-      SELECT 
-        r.id,
-        r.product_id,
-        p.name as product_name,
-        u.name as username,
-        u.is_verified, 
-        r.text as review_text,
-        r.score,
-        r.found_helpful,
-        r.title,
-        r.date as review_date
-      FROM reviews as r
-      INNER JOIN products as p 
-        ON r.product_id = p.id
-      INNER JOIN users as u
-        ON r.user_id = u.id
-      WHERE r.product_id = $1
-    `;
+    const query = 'SELECT * FROM reviews WHERE product_id = $1';
     const res = await client.query(query, [productId]);
     return res.rows;
   } catch (err) {
@@ -76,7 +41,10 @@ const getAllReviews = async (productId) => {
 const getColumns = (data) => {
   const reviewColumns = {
     productId: 'product_id',
+    productName: 'product_name',
     userId: 'user_id',
+    userName: 'user_name',
+    isVerified: 'is_verified',
     title: 'title',
     text: 'text',
     score: 'score',
@@ -97,7 +65,7 @@ const getColumns = (data) => {
 const constructUpdateQuery = (columns) => {
   const cols = Object.keys(columns);
   const setClause = cols.map((col, index) => `${col} = $${index + 1}`).join(',');
-  return `UPDATE reviews SET ${setClause} WHERE review_id = $${cols.length + 1}`;
+  return `UPDATE reviews SET ${setClause} WHERE id = $${cols.length + 1}`;
 };
 
 const updateReview = async (data, reviewId) => {
@@ -113,7 +81,17 @@ const updateReview = async (data, reviewId) => {
 
 const deleteReview = async (reviewId) => {
   try {
-    const query = 'DELETE FROM reviews WHERE review_id = $1';
+    const query = 'DELETE FROM reviews WHERE id = $1';
+    const res = await client.query(query, [reviewId]);
+    return res.rowCount;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const incrementFoundHelpful = async (reviewId) => {
+  try {
+    const query = 'UPDATE reviews SET found_helpful = found_helpful + 1 WHERE id = $1';
     const res = await client.query(query, [reviewId]);
     return res.rowCount;
   } catch (err) {
@@ -127,4 +105,5 @@ module.exports = {
   getAllReviews,
   updateReview,
   deleteReview,
+  incrementFoundHelpful,
 };

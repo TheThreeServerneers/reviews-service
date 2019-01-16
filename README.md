@@ -94,3 +94,8 @@ Request body must have one or more of the key-value pairs contained in the objec
 ```
 DELETE /reviews/:reviewid
 ```
+
+### Increment 'found helpful' count for a review
+```
+POST /reviews/helpful/:reviewid
+```
