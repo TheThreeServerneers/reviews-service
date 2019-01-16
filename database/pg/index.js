@@ -49,6 +49,7 @@ const getAllReviews = async (productId) => {
   try {
     const query = `
       SELECT 
+        r.id,
         r.product_id,
         p.name as product_name,
         u.name as username,
