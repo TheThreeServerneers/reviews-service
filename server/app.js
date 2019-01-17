@@ -9,7 +9,7 @@ const app = express();
 app.use(Cors());
 app.use('/:productid', express.static(path.join(__dirname, '../public')));
 
-app.use(bodyParser());
+app.use(bodyParser.json());
 
 app.get('/reviews/all/:productId', async (req, res) => {
   try {
