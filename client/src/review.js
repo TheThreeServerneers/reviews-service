@@ -48,7 +48,7 @@ const Review = function (props) {
     let preDate = props.review.review_date;
     let reviewDate = dateConverter(preDate);
     let isVerified;
-    if (props.review.is_verified === 1) {
+    if (props.review.is_verified) {
         isVerified = "Verified Purchase";
     }
     let personOrPeople = "people";

@@ -20,7 +20,7 @@ describe('<Review />', () => {
     const sampleReview = {
       found_helpful: 6,
       id: 11,
-      is_verified: 1,
+      is_verified: true,
       product_id: 1,
       review_date: "2016-07-26T07:00:00.000Z",
       review_text: "Ullam sit et eos praesentium enim reprehenderit est sunt ipsum. Nam enim voluptate magnam nostrum quibusdam.",
