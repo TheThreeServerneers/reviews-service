@@ -40,8 +40,7 @@ app.post('/reviews/helpful/:reviewId', async (req, res) => {
     if (updatedReviewCount === 0) {
       return res.sendStatus(404);
     }
-    const updatedReview = await db.getReview(reviewId);
-    return res.send(updatedReview);
+    return res.sendStatus(200);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
