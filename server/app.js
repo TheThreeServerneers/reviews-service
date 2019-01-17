@@ -21,18 +21,6 @@ app.get('/reviews/all/:productId', async (req, res) => {
   }
 });
 
-app.get('/reviews/average/:productId', async (req, res) => {
-  try {
-    const reviews = await db.getAllReviews(req.params.productId);
-    const totalReviews = reviews.length;
-    const averageScore = reviews.reduce((sum, review) => sum + review.score, 0) / totalReviews;
-    return res.send({ averageScore, totalReviews });
-  } catch (err) {
-    console.error(err);
-    return res.sendStatus(500);
-  }
-});
-
 app.post('/reviews/helpful/:reviewId', async (req, res) => {
   try {
     const { reviewId } = req.params;
