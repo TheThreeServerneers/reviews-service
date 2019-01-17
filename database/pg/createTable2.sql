@@ -4,11 +4,11 @@ CREATE TABLE IF NOT EXISTS reviews (
   product_id INTEGER NOT NULL,
   product_name VARCHAR(255) NOT NULL,
   user_id INTEGER NOT NULL,
-  user_name VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL,
   is_verified BOOLEAN NOT NULL,
   title VARCHAR(255) NOT NULL,
-  text TEXT NOT NULL,
+  review_text TEXT NOT NULL,
   score INTEGER NOT NULL,
-  date DATE NOT NULL,
+  review_date DATE NOT NULL,
   found_helpful INTEGER NOT NULL
 );
