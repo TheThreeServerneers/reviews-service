@@ -21,10 +21,13 @@ const Review = function (props) {
             let month = monthObject[dateArray[1]];
             let day = dateArray[2].slice(0, 2);
             let dayAddon = 'th';
-            if (day[1] === "1") {
+            if (day[0] === "0" && day[1] === "1") {
                 dayAddon = 'st';
             }
-            if (day[1] === "2" || day[1] === "3") {
+            if (day[0] === "0" && day[1] === "2") {
+              dayAddon = 'nd';
+            }
+            if (day[0] === "0" && day[1] === "3") {
                 dayAddon = 'rd'
             }
             if (day[0] === "0") {
