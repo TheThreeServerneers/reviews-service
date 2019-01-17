@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS reviews (
   score int,
   date date,
   found_helpful int,
-  PRIMARY KEY (review_id, product_id, title)
+  PRIMARY KEY (product_id)
 );
