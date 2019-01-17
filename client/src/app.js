@@ -31,7 +31,7 @@ class App extends React.Component {
         test = test.split('/');
         product = test[test.length-2];
 
-        fetch('http://18.224.20.242:80/reviews/all/' + product).then((data) => {
+        fetch('http://localhost:3001/reviews/all/' + product).then((data) => {
             data.json().then((results) => {
                 let newState = Object.assign({}, this.state);
                 for (let i = 0; i < results.length; i++) {
@@ -55,7 +55,7 @@ class App extends React.Component {
                 newState.reviews[i].found_helpful += 1;
                 newState.filteredReviews = newState.reviews;
                 this.setState(newState);
-                fetch('http://18.224.20.242:80/reviews/helpful/' + value, {
+                fetch('http://localhost:3001/reviews/helpful/' + value, {
                     method: 'POST',
                 });
             }
