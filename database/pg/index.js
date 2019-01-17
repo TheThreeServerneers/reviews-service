@@ -10,7 +10,7 @@ const addReview = async (data) => {
       reviewId, productId, productName, userId, userName, isVerified, title, text, score, date, foundHelpful,
     } = data;
     const query = 'INSERT INTO reviews (review_id, product_id, product_name, user_id, user_name, is_verified, title, text, score, date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
-    const values = [reviewId, productId, productName, userId, userName, isVerified, title, text,score, date, foundHelpful];
+    const values = [reviewId, productId, productName, userId, userName, isVerified, title, text, score, date, foundHelpful];
     const res = await client.query(query, values);
     return res.rowCount;
   } catch (err) {
@@ -28,14 +28,14 @@ const getReview = async (reviewId) => {
   }
 };
 
-const getAllReviews = async (productId) => {
-  try {
-    const query = 'SELECT * FROM reviews WHERE product_id = $1';
-    const res = await client.query(query, [productId]);
-    return res.rows;
-  } catch (err) {
-    throw err;
-  }
+const getAllReviews = (productId, callback) => {
+  const query = 'SELECT * FROM reviews WHERE product_id = $1';
+  client.query(query, [productId], (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res);
+  });
 };
 
 const getColumns = (data) => {

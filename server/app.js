@@ -11,15 +11,17 @@ app.use('/:productid', express.static(path.join(__dirname, '../public')));
 
 app.use(bodyParser.json());
 
-app.get('/reviews/all/:productId', async (req, res) => {
-  try {
-    const reviews = await db.getAllReviews(req.params.productId);
+const getReviews = (req, res) => {
+  db.getAllReviews(req.params.productId, (err, reviews) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
     return res.send(reviews);
-  } catch (err) {
-    console.error(err);
-    return res.sendStatus(500);
-  }
-});
+  });
+};
+
+app.get('/reviews/all/:productId', getReviews);
 
 app.post('/reviews/helpful/:reviewId', async (req, res) => {
   try {
