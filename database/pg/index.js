@@ -1,8 +1,12 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 const config = require('./connectConfig.js');
 
-const client = new Client(config);
-client.connect();
+const pool = new Pool(config);
+
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
+});
 
 const addReview = async (data) => {
   try {
@@ -30,11 +34,12 @@ const getReview = async (reviewId) => {
 
 const getAllReviews = (productId, callback) => {
   const query = 'SELECT * FROM reviews WHERE product_id = $1';
-  client.query(query, [productId], (err, res) => {
-    if (err) {
-      callback(err);
-    }
-    callback(null, res);
+  pool.connect((err, client, done) => {
+    if (err) throw err;
+    client.query(query, [productId], (err, res) => {
+      done();
+      callback(err, res);
+    });
   });
 };
 
