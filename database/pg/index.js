@@ -1,7 +1,10 @@
 const { Pool } = require('pg');
-const config = require('./connectConfig.js');
+const { database } = require('./connectConfig.js');
 
-const pool = new Pool(config);
+const pool = new Pool({
+  database,
+  max: 100,
+});
 
 pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
@@ -38,7 +41,7 @@ const getAllReviews = (productId, callback) => {
     if (err) throw err;
     client.query(query, [productId], (err, res) => {
       done();
-      callback(err, res);
+      callback(err, res.rows);
     });
   });
 };

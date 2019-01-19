@@ -7,7 +7,7 @@ const db = require('../database/pg');
 const app = express();
 
 app.use(Cors());
-app.use('/:productid', express.static(path.join(__dirname, '../public')));
+app.use('/static/:productid', express.static(path.join(__dirname, '../public')));
 
 app.use(bodyParser.json());
 
