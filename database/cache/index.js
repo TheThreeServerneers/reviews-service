@@ -5,7 +5,7 @@ const db = require('../pg');
 const client = redis.createClient();
 client.on('error', err => console.error(err));
 
-const cacheReviews = (productId, callback) => {
+const getAllReviews = (productId, callback) => {
   client.get(productId, (err, reviewsJSON) => {
     if (err || reviewsJSON === null) {
       db.getAllReviews(productId, (err, reviews) => {
@@ -23,6 +23,18 @@ const cacheReviews = (productId, callback) => {
   });
 };
 
+const addReview = (data, callback) => {
+  const productId = data.product_id;
+  db.addReview(data, (err, rowsChanged) => {
+    if (err) {
+      return callback(err);
+    }
+    client.del(productId);
+    callback(err, rowsChanged);
+  });
+};
+
 module.exports = {
-  cacheReviews,
+  getAllReviews,
+  addReview,
 };
