@@ -81,10 +81,27 @@ const deleteReview = (req, res) => {
   });
 };
 
+const incrementFoundHelpful = (req, res) => {
+  const { reviewId } = req.params;
+  const { product_id } = req.body;
+  db.incrementFoundHelpful(reviewId, (err, numRowsChanged) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+    if (numRowsChanged === 0) {
+      return res.sendStatus(404);
+    }
+    client.del(product_id);
+    return res.sendStatus(200);
+  });
+};
+
 module.exports = {
   getAllReviews,
   getReview,
   addReview,
   updateReview,
   deleteReview,
+  incrementFoundHelpful,
 };

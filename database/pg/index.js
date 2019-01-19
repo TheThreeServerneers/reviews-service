@@ -80,14 +80,11 @@ const deleteReview = (reviewId, callback) => {
   });
 };
 
-const incrementFoundHelpful = async (reviewId) => {
-  try {
-    const query = 'UPDATE reviews SET found_helpful = found_helpful + 1 WHERE id = $1';
-    const res = await client.query(query, [reviewId]);
-    return res.rowCount;
-  } catch (err) {
-    throw err;
-  }
+const incrementFoundHelpful = (reviewId, callback) => {
+  const query = 'UPDATE reviews SET found_helpful = found_helpful + 1 WHERE id = $1';
+  poolQuery(query, [reviewId], (err, res) => {
+    callback(err, res.rowCount);
+  });
 };
 
 module.exports = {
