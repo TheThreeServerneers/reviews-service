@@ -26,20 +26,6 @@ const poolQuery = (query, values, callback) => {
   });
 };
 
-// const addReview = async (data) => {
-//   try {
-//     const {
-//       reviewId, productId, productName, userId, userName, isVerified, title, text, score, date, foundHelpful,
-//     } = data;
-//     const query = 'INSERT INTO reviews (review_id, product_id, product_name, user_id, user_name, is_verified, title, text, score, date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
-//     const values = [reviewId, productId, productName, userId, userName, isVerified, title, text, score, date, foundHelpful];
-//     const res = await client.query(query, values);
-//     return res.rowCount;
-//   } catch (err) {
-//     throw err;
-//   }
-// };
-
 const addReview = (data, callback) => {
   const {
     review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful
@@ -53,16 +39,6 @@ const addReview = (data, callback) => {
     callback(null, res.rowCount);
   });
 };
-
-// const getReview = async (reviewId) => {
-//   try {
-//     const query = 'SELECT * FROM reviews WHERE id = $1';
-//     const res = await client.query(query, [reviewId]);
-//     return res.rows[0];
-//   } catch (err) {
-//     throw err;
-//   }
-// };
 
 const getReview = (reviewId, callback) => {
   const query = 'SELECT * FROM reviews WHERE id = $1';
