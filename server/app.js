@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 app.get('/reviews/all/:productId', controller.getAllReviews);
 app.get('/reviews/:reviewId', controller.getReview);
 app.post('/reviews', controller.addReview);
+app.patch('/reviews/:reviewId', controller.updateReview);
 
 app.post('/reviews/helpful/:reviewId', async (req, res) => {
   try {

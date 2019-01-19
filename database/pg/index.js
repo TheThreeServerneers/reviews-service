@@ -61,45 +61,16 @@ const getAllReviews = (productId, callback) => {
   });
 };
 
-const getColumns = (data) => {
-  const reviewColumns = {
-    productId: 'product_id',
-    productName: 'product_name',
-    userId: 'user_id',
-    userName: 'user_name',
-    isVerified: 'is_verified',
-    title: 'title',
-    text: 'text',
-    score: 'score',
-    date: 'date',
-    foundHelpful: 'found_helpful',
-  };
-
-  const subset = {};
-  Object.keys(data).forEach((key) => {
-    if (reviewColumns.hasOwnProperty(key)) {
-      subset[reviewColumns[key]] = data[key];
-    }
-  });
-
-  return subset;
-};
-
-const constructUpdateQuery = (columns) => {
-  const cols = Object.keys(columns);
+const constructUpdateQuery = (cols) => {
   const setClause = cols.map((col, index) => `${col} = $${index + 1}`).join(',');
   return `UPDATE reviews SET ${setClause} WHERE id = $${cols.length + 1}`;
 };
 
-const updateReview = async (data, reviewId) => {
-  try {
-    const columns = getColumns(data);
-    const query = constructUpdateQuery(columns);
-    const res = await client.query(query, [...Object.values(columns), reviewId]);
-    return res.rowCount;
-  } catch (err) {
-    throw err;
-  }
+const updateReview = (data, reviewId, callback) => {
+  const query = constructUpdateQuery(Object.keys(data));
+  poolQuery(query, [...Object.values(data), reviewId], (err, res) => {
+    callback(err, res.rowCount);
+  });
 };
 
 const deleteReview = async (reviewId) => {
