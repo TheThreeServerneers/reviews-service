@@ -52,12 +52,11 @@ const getReview = (reviewId, callback) => {
 
 const getAllReviews = (productId, callback) => {
   const query = 'SELECT * FROM reviews WHERE product_id = $1';
-  pool.connect((err, client, done) => {
-    if (err) throw err;
-    client.query(query, [productId], (err, res) => {
-      done();
-      callback(err, res.rows);
-    });
+  poolQuery(query, [productId], (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rows);
   });
 };
 
@@ -69,21 +68,30 @@ const constructUpdateQuery = (cols) => {
 const updateReview = (data, reviewId, callback) => {
   const query = constructUpdateQuery(Object.keys(data));
   poolQuery(query, [...Object.values(data), reviewId], (err, res) => {
-    callback(err, res.rowCount);
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rowCount);
   });
 };
 
 const deleteReview = (reviewId, callback) => {
   const query = 'DELETE FROM reviews WHERE id = $1';
   poolQuery(query, [reviewId], (err, res) => {
-    callback(err, res.rowCount);
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rowCount);
   });
 };
 
 const incrementFoundHelpful = (reviewId, callback) => {
   const query = 'UPDATE reviews SET found_helpful = found_helpful + 1 WHERE id = $1';
   poolQuery(query, [reviewId], (err, res) => {
-    callback(err, res.rowCount);
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rowCount);
   });
 };
 
