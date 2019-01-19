@@ -73,14 +73,11 @@ const updateReview = (data, reviewId, callback) => {
   });
 };
 
-const deleteReview = async (reviewId) => {
-  try {
-    const query = 'DELETE FROM reviews WHERE id = $1';
-    const res = await client.query(query, [reviewId]);
-    return res.rowCount;
-  } catch (err) {
-    throw err;
-  }
+const deleteReview = (reviewId, callback) => {
+  const query = 'DELETE FROM reviews WHERE id = $1';
+  poolQuery(query, [reviewId], (err, res) => {
+    callback(err, res.rowCount);
+  });
 };
 
 const incrementFoundHelpful = async (reviewId) => {

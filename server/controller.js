@@ -51,9 +51,24 @@ const addReview = (req, res) => {
 
 const updateReview = (req, res) => {
   const { reviewId } = req.params;
-  const data = req.body;
-  const { product_id } = data;
+  const { product_id, data } = req.body;
   db.updateReview(data, reviewId, (err, numRowsChanged) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+    if (numRowsChanged === 0) {
+      return res.sendStatus(404);
+    }
+    client.del(product_id);
+    return res.sendStatus(200);
+  });
+};
+
+const deleteReview = (req, res) => {
+  const { reviewId } = req.params;
+  const { product_id } = req.body;
+  db.deleteReview(reviewId, (err, numRowsChanged) => {
     if (err) {
       console.error(err);
       return res.sendStatus(500);
@@ -71,4 +86,5 @@ module.exports = {
   getReview,
   addReview,
   updateReview,
+  deleteReview,
 };
