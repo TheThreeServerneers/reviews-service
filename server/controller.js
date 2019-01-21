@@ -36,16 +36,13 @@ const getReview = (req, res) => {
 const addReview = (req, res) => {
   const data = req.body;
   const { product_id } = data;
-  db.addReview(data, (err, numRowsChanged) => {
+  db.addReview(data, (err, id) => {
     if (err) {
       console.error(err);
       return res.sendStatus(500);
     }
-    if (numRowsChanged === 0) {
-      return res.sendStatus(404);
-    }
     client.del(product_id);
-    return res.sendStatus(201);
+    return res.status(201).send({ id });
   });
 };
 

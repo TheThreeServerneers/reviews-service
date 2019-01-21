@@ -30,13 +30,13 @@ const addReview = (data, callback) => {
   const {
     review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful
   } = data;
-  const query = 'INSERT INTO reviews (review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
+  const query = 'INSERT INTO reviews (review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id';
   const values = [review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful];
   poolQuery(query, values, (err, res) => {
     if (err) {
       callback(err);
     }
-    callback(null, res.rowCount);
+    callback(null, res.rows[0].id);
   });
 };
 
