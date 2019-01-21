@@ -3,7 +3,7 @@ const { database } = require('./connectConfig.js');
 
 const pool = new Pool({
   database,
-  max: 100,
+  max: 50,
 });
 
 pool.on('error', (err) => {
