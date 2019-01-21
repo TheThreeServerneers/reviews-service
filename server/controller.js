@@ -41,6 +41,7 @@ const addReview = (req, res) => {
       console.error(err);
       return res.sendStatus(500);
     }
+    // console.log('POST', product_id);
     client.del(product_id);
     return res.status(201).send({ id });
   });
@@ -65,16 +66,14 @@ const updateReview = (req, res) => {
 const deleteReview = (req, res) => {
   const { reviewId } = req.params;
   const { product_id } = req.body;
-  db.deleteReview(reviewId, (err, numRowsChanged) => {
+  db.deleteReview(reviewId, (err, id) => {
     if (err) {
       console.error(err);
       return res.sendStatus(500);
     }
-    if (numRowsChanged === 0) {
-      return res.sendStatus(404);
-    }
+    // console.log('DEL', product_id);
     client.del(product_id);
-    return res.sendStatus(200);
+    return res.status(200).send({ id });
   });
 };
 

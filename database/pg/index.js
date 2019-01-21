@@ -76,12 +76,12 @@ const updateReview = (data, reviewId, callback) => {
 };
 
 const deleteReview = (reviewId, callback) => {
-  const query = 'DELETE FROM reviews WHERE id = $1';
+  const query = 'DELETE FROM reviews WHERE id = $1 RETURNING id';
   poolQuery(query, [reviewId], (err, res) => {
     if (err) {
       callback(err);
     }
-    callback(null, res.rowCount);
+    callback(null, res.rows[0].id);
   });
 };
 
