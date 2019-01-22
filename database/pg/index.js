@@ -1,10 +1,7 @@
 const { Pool } = require('pg');
-const { database } = require('./connectConfig.js');
+const config = require('./connectConfig.js');
 
-const pool = new Pool({
-  database,
-  max: 50,
-});
+const pool = new Pool(config);
 
 pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
