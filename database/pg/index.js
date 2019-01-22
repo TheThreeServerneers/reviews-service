@@ -1,102 +1,98 @@
-const { Client } = require('pg');
-const config = require('./connectConfig.js');
+const { Pool } = require('pg');
+const { database } = require('./connectConfig.js');
 
-const client = new Client(config);
-client.connect();
+const pool = new Pool({
+  database,
+  max: 50,
+});
 
-const addReview = async (data) => {
-  try {
-    const {
-      reviewId, productId, productName, userId, userName, isVerified, title, text, score, date, foundHelpful,
-    } = data;
-    const query = 'INSERT INTO reviews (review_id, product_id, product_name, user_id, user_name, is_verified, title, text, score, date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)';
-    const values = [reviewId, productId, productName, userId, userName, isVerified, title, text,score, date, foundHelpful];
-    const res = await client.query(query, values);
-    return res.rowCount;
-  } catch (err) {
-    throw err;
-  }
-};
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
+});
 
-const getReview = async (reviewId) => {
-  try {
-    const query = 'SELECT * FROM reviews WHERE id = $1';
-    const res = await client.query(query, [reviewId]);
-    return res.rows[0];
-  } catch (err) {
-    throw err;
-  }
-};
-
-const getAllReviews = async (productId) => {
-  try {
-    const query = 'SELECT * FROM reviews WHERE product_id = $1';
-    const res = await client.query(query, [productId]);
-    return res.rows;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const getColumns = (data) => {
-  const reviewColumns = {
-    productId: 'product_id',
-    productName: 'product_name',
-    userId: 'user_id',
-    userName: 'user_name',
-    isVerified: 'is_verified',
-    title: 'title',
-    text: 'text',
-    score: 'score',
-    date: 'date',
-    foundHelpful: 'found_helpful',
-  };
-
-  const subset = {};
-  Object.keys(data).forEach((key) => {
-    if (reviewColumns.hasOwnProperty(key)) {
-      subset[reviewColumns[key]] = data[key];
+const poolQuery = (query, values, callback) => {
+  pool.connect((err, client, done) => {
+    if (err) {
+      callback(err);
     }
+    client.query(query, values, (err, res) => {
+      if (err) {
+        callback(err);
+      }
+      done();
+      callback(null, res);
+    });
   });
-
-  return subset;
 };
 
-const constructUpdateQuery = (columns) => {
-  const cols = Object.keys(columns);
+const addReview = (data, callback) => {
+  const {
+    review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful
+  } = data;
+  const query = 'INSERT INTO reviews (review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id';
+  const values = [review_id, product_id, product_name, user_id, username, is_verified, title, review_text, score, review_date, found_helpful];
+  poolQuery(query, values, (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rows[0].id);
+  });
+};
+
+const getReview = (reviewId, callback) => {
+  const query = 'SELECT * FROM reviews WHERE id = $1';
+  poolQuery(query, [reviewId], (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rows[0]);
+  });
+};
+
+const getAllReviews = (productId, callback) => {
+  const query = 'SELECT * FROM reviews WHERE product_id = $1';
+  poolQuery(query, [productId], (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rows);
+  });
+};
+
+const constructUpdateQuery = (cols) => {
   const setClause = cols.map((col, index) => `${col} = $${index + 1}`).join(',');
   return `UPDATE reviews SET ${setClause} WHERE id = $${cols.length + 1}`;
 };
 
-const updateReview = async (data, reviewId) => {
-  try {
-    const columns = getColumns(data);
-    const query = constructUpdateQuery(columns);
-    const res = await client.query(query, [...Object.values(columns), reviewId]);
-    return res.rowCount;
-  } catch (err) {
-    throw err;
-  }
+const updateReview = (data, reviewId, callback) => {
+  const query = constructUpdateQuery(Object.keys(data));
+  poolQuery(query, [...Object.values(data), reviewId], (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rowCount);
+  });
 };
 
-const deleteReview = async (reviewId) => {
-  try {
-    const query = 'DELETE FROM reviews WHERE id = $1';
-    const res = await client.query(query, [reviewId]);
-    return res.rowCount;
-  } catch (err) {
-    throw err;
-  }
+const deleteReview = (reviewId, callback) => {
+  const query = 'DELETE FROM reviews WHERE id = $1 RETURNING id';
+  poolQuery(query, [reviewId], (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rows[0].id);
+  });
 };
 
-const incrementFoundHelpful = async (reviewId) => {
-  try {
-    const query = 'UPDATE reviews SET found_helpful = found_helpful + 1 WHERE id = $1';
-    const res = await client.query(query, [reviewId]);
-    return res.rowCount;
-  } catch (err) {
-    throw err;
-  }
+const incrementFoundHelpful = (reviewId, callback) => {
+  const query = 'UPDATE reviews SET found_helpful = found_helpful + 1 WHERE id = $1';
+  poolQuery(query, [reviewId], (err, res) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, res.rowCount);
+  });
 };
 
 module.exports = {

@@ -1,3 +1,9 @@
+# New Relic
+newrelic.js
+
+# Log files
+*.log 
+
 # DB Config
 connectConfig.js
 

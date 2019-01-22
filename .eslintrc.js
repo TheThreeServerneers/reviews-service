@@ -1,3 +1,7 @@
 module.exports = {
-    "extends": "airbnb"
+    "extends": "airbnb",
+    "rules": {
+      "consistent-return": 0,
+      "no-console": 0
+    }
 };
