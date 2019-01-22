@@ -1,7 +1,10 @@
 const fs = require('fs');
 const faker = require('faker');
 const csvWriter = require('csv-write-stream');
-const { NUM_PRODUCTS, NUM_USERS, MAX_REVIEWS_PER_PRODUCT } = require('./generationConfig.js');
+
+// const NUM_PRODUCTS = 10000000;
+const NUM_PRODUCTS = 1;
+const MAX_REVIEWS_PER_PRODUCT = 10;
 
 const writer = csvWriter();
 writer.pipe(fs.createWriteStream('reviews.csv'));
@@ -13,16 +16,16 @@ const write = () => {
   let ok = true;
 
   while (i <= NUM_PRODUCTS && ok) {
-    const numReviews = faker.random.number({ max: MAX_REVIEWS_PER_PRODUCT, min: 1 });
+    const numReviews = faker.random.number({ max: MAX_REVIEWS_PER_PRODUCT, min: 0 });
     for (let j = 0; j < numReviews; j += 1) {
       ok = writer.write({
-        reviews_id: counter,
         product_id: i,
-        user_id: faker.random.number({ max: NUM_USERS, min: 1 }),
+        username: faker.internet.userName(),
+        is_verified: faker.random.boolean(),
         title: `${counter}${faker.random.words()}`,
-        text: faker.lorem.paragraph(),
+        review_text: faker.lorem.paragraph(),
         score: faker.random.number({ max: 5, min: 1 }),
-        date: faker.date.between('2019-01-09', '2018-10-09').toISOString().split('T')[0],
+        review_date: faker.date.between('2019-01-09', '2018-10-09').toISOString().split('T')[0],
         found_helpful: faker.random.number(25),
       });
       counter += 1;

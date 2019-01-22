@@ -1,4 +1,4 @@
-COPY reviews (review_id, product_id, user_id, title, text, score, date, found_helpful)
-FROM '/Users/stephenliao/hr/reviews-service/database/pg/reviews.csv'
+COPY reviews (product_id, username, is_verified, title, review_text, score, review_date, found_helpful)
+FROM './reviews.csv'
 DELIMITER ','
 CSV HEADER;
